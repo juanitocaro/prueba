@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 
+
 function App() {
   const [isLogin, setIsLogin] = useState(true);
 
@@ -29,6 +30,10 @@ function App() {
           </button>
         </div>
       </div>
+
+  
+
+      
     </div>
   );
 }

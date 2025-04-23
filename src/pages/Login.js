@@ -45,7 +45,7 @@ export const Login = () => {
 
   return (
     <Container>
-      <h2>Login</h2>
+      <h2 className="bg-slate-700 text-cyan-500">Login</h2>
       <h1 className="text-3xl font-bold underline ">
       
     </h1>
