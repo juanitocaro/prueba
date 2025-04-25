@@ -2,30 +2,25 @@ import React, { useState, useEffect } from 'react';
 
 const Home = () => {
   const [user, setUser] = useState(null);
-  const [users, setUsers] = useState([]); // NUEVO estado para mostrar todos los usuarios
+  const [users, setUsers] = useState([]);
   const [newUsername, setNewUsername] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [message, setMessage] = useState('');
 
-  // Obtener usuario autenticado
-
   useEffect(() => {
     fetch('http://localhost:3001/api/user', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     })
       .then((res) => res.json())
       .then((data) => setUser(data))
-      .catch((err) => console.error('Error fetching user data: ', err));
+      .catch((err) => console.error('Error fetching user data:', err));
   }, []);
 
-  // Obtener TODOS los usuarios desde el backend Prisma (nuevo)
   useEffect(() => {
     fetch('http://localhost:4000/api/users')
       .then((res) => res.json())
       .then((data) => setUsers(data))
-      .catch((err) => console.error('Error fetching all users: ', err));
+      .catch((err) => console.error('Error fetching all users:', err));
   }, []);
 
   const updateUsername = async () => {
@@ -33,7 +28,6 @@ const Home = () => {
       setMessage('El nombre de usuario no puede estar vacío');
       return;
     }
-
     try {
       const response = await fetch('http://localhost:3001/api/user/username', {
         method: 'PUT',
@@ -44,14 +38,13 @@ const Home = () => {
         body: JSON.stringify({ username: newUsername }),
       });
 
+      const data = await response.json();
       if (response.ok) {
-        const updatedUser = await response.json();
-        setUser(updatedUser);
+        setUser(data);
         setMessage('Nombre de usuario actualizado exitosamente');
         setNewUsername('');
       } else {
-        const errorData = await response.json();
-        setMessage(errorData.error || 'Error al actualizar el nombre de usuario');
+        setMessage(data.error || 'Error al actualizar el nombre de usuario');
       }
     } catch (error) {
       setMessage('Error en la actualización del nombre de usuario');
@@ -64,7 +57,6 @@ const Home = () => {
       setMessage('La contraseña no puede estar vacía');
       return;
     }
-
     try {
       const response = await fetch('http://localhost:3001/api/user/password', {
         method: 'PUT',
@@ -75,14 +67,13 @@ const Home = () => {
         body: JSON.stringify({ password: newPassword }),
       });
 
+      const data = await response.json();
       if (response.ok) {
-        const updatedUser = await response.json();
-        setUser(updatedUser);
+        setUser(data);
         setMessage('Contraseña actualizada exitosamente');
         setNewPassword('');
       } else {
-        const errorData = await response.json();
-        setMessage(errorData.error || 'Error al actualizar la contraseña');
+        setMessage(data.error || 'Error al actualizar la contraseña');
       }
     } catch (error) {
       setMessage('Error en la actualización de la contraseña');
@@ -96,9 +87,7 @@ const Home = () => {
     <div className="min-h-screen bg-blue-200 flex items-center justify-center p-4">
       <div className="w-full max-w-lg bg-white p-8 rounded-lg shadow-xl">
         <h1 className="text-3xl mb-6">Bienvenido, {user.username}</h1>
-
         {message && <p className="text-center text-red-500">{message}</p>}
-
         <div className="mb-6">
           <label className="block text-sm font-semibold text-gray-700">Nuevo nombre de usuario:</label>
           <input
@@ -114,7 +103,6 @@ const Home = () => {
             Cambiar Nombre de Usuario
           </button>
         </div>
-
         <div className="mb-6">
           <label className="block text-sm font-semibold text-gray-700">Nueva contraseña:</label>
           <input
@@ -130,7 +118,6 @@ const Home = () => {
             Cambiar Contraseña
           </button>
         </div>
-
         <div className="mt-8">
           <h2 className="text-xl font-semibold mb-2">Todos los usuarios (desde DBeaver/Prisma)</h2>
           <ul className="space-y-1">
