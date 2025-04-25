@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 
 const Home = () => {
-  const [user, setUser] = useState(null);         // Estado para almacenar los datos del usuario
-  const [newUsername, setNewUsername] = useState(''); // Estado para manejar el nuevo nombre de usuario
-  const [newPassword, setNewPassword] = useState(''); // Estado para manejar la nueva contraseña
-  const [message, setMessage] = useState('');     // Estado para mostrar mensajes de éxito o error
+  const [user, setUser] = useState(null);
+  const [users, setUsers] = useState([]); // NUEVO estado para mostrar todos los usuarios
+  const [newUsername, setNewUsername] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [message, setMessage] = useState('');
 
-  // Fetch para obtener el usuario logueado al cargar el componente
+  // Obtener usuario autenticado
+
   useEffect(() => {
     fetch('http://localhost:3001/api/user', {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,  // Usar el token guardado en el localStorage
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     })
       .then((res) => res.json())
@@ -18,7 +20,14 @@ const Home = () => {
       .catch((err) => console.error('Error fetching user data: ', err));
   }, []);
 
-  // Función para actualizar el nombre de usuario
+  // Obtener TODOS los usuarios desde el backend Prisma (nuevo)
+  useEffect(() => {
+    fetch('http://localhost:4000/api/users')
+      .then((res) => res.json())
+      .then((data) => setUsers(data))
+      .catch((err) => console.error('Error fetching all users: ', err));
+  }, []);
+
   const updateUsername = async () => {
     if (!newUsername) {
       setMessage('El nombre de usuario no puede estar vacío');
@@ -37,9 +46,9 @@ const Home = () => {
 
       if (response.ok) {
         const updatedUser = await response.json();
-        setUser(updatedUser);  // Actualiza los datos del usuario en el estado
+        setUser(updatedUser);
         setMessage('Nombre de usuario actualizado exitosamente');
-        setNewUsername('');     // Limpiar el campo del nombre
+        setNewUsername('');
       } else {
         const errorData = await response.json();
         setMessage(errorData.error || 'Error al actualizar el nombre de usuario');
@@ -50,7 +59,6 @@ const Home = () => {
     }
   };
 
-  // Función para actualizar la contraseña
   const updatePassword = async () => {
     if (!newPassword) {
       setMessage('La contraseña no puede estar vacía');
@@ -69,9 +77,9 @@ const Home = () => {
 
       if (response.ok) {
         const updatedUser = await response.json();
-        setUser(updatedUser);  // Actualiza los datos del usuario en el estado
+        setUser(updatedUser);
         setMessage('Contraseña actualizada exitosamente');
-        setNewPassword('');     // Limpiar el campo de la contraseña
+        setNewPassword('');
       } else {
         const errorData = await response.json();
         setMessage(errorData.error || 'Error al actualizar la contraseña');
@@ -82,20 +90,15 @@ const Home = () => {
     }
   };
 
-  // Si el usuario no está logueado, muestra un mensaje
-  if (!user) {
-    return <div>Loading...</div>;
-  }
+  if (!user) return <div>Loading...</div>;
 
   return (
     <div className="min-h-screen bg-blue-200 flex items-center justify-center p-4">
       <div className="w-full max-w-lg bg-white p-8 rounded-lg shadow-xl">
         <h1 className="text-3xl mb-6">Bienvenido, {user.username}</h1>
 
-        {/* Mensajes de éxito o error */}
         {message && <p className="text-center text-red-500">{message}</p>}
 
-        {/* Formulario para cambiar nombre de usuario */}
         <div className="mb-6">
           <label className="block text-sm font-semibold text-gray-700">Nuevo nombre de usuario:</label>
           <input
@@ -112,7 +115,6 @@ const Home = () => {
           </button>
         </div>
 
-        {/* Formulario para cambiar contraseña */}
         <div className="mb-6">
           <label className="block text-sm font-semibold text-gray-700">Nueva contraseña:</label>
           <input
@@ -127,6 +129,17 @@ const Home = () => {
           >
             Cambiar Contraseña
           </button>
+        </div>
+
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold mb-2">Todos los usuarios (desde DBeaver/Prisma)</h2>
+          <ul className="space-y-1">
+            {users.map((u) => (
+              <li key={u.id} className="text-sm text-gray-700">
+                • {u.name} - {u.email}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>
