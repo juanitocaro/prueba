@@ -14,11 +14,15 @@ app.use(cors({
 // Middleware para parsear JSON
 app.use(express.json());
 
-// Rutas de usuario
+// Ruta raíz para prueba
+app.get('/', (req, res) => {
+  res.send('Bienvenido a la API');
+});
+
+// Rutas de usuario (API)
 app.use('/api/users', usersRouter);
 
 // Servidor escuchando
 app.listen(PORT, () => {
   console.log(`Servidor backend corriendo en http://localhost:${PORT}`);
 });
-
