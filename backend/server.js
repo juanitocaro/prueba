@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import usersRouter from './routes/users.js';
+import usersRouter from './routes/users.js';  // Asegúrate de que esta ruta sea correcta
 
 const app = express();
 const PORT = 4000;
@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 });
 
 // Rutas de usuario (API)
-app.use('/api/users', usersRouter);
+app.use('/api/users', usersRouter);  // Aquí usamos el router de users.js
 
 // Servidor escuchando
 app.listen(PORT, () => {
