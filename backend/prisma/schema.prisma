@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = "mysql://root:123456@localhost:3306/prueba"
 }
 
 model User {
@@ -12,6 +12,4 @@ model User {
   name     String
   email    String @unique
   password String
-  createdAt DateTime @default(now())
-
 }

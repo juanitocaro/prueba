@@ -40,4 +40,4 @@ yarn-error.log*
 **/._*
 
 # Ignore package-lock.json
-/package-lock.json
+package-lock.json
